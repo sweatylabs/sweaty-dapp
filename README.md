@@ -59,5 +59,7 @@ SweatyDapp is a Javascript browser library to help interact with SweatyNFT smart
 See `public/index.html` for a working HTML example.
 
 ### Development
+
 `yarn start` – start demo server on port 9000
+
 `yarn build` – build JS lib
