@@ -10,6 +10,7 @@ SweatyDapp is a Javascript browser library to help interact with SweatyNFT smart
 
 ### Example
  ```js
+  <script src='https://cloud.sweatynft.com/downloads/sweaty-dapp-v0.3.0.js'></script>
   <script>
     window.addEventListener('DOMContentLoaded', async function () {
 
