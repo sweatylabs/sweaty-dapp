@@ -1,7 +1,7 @@
 {
   "name": "@sweatylabs/sweaty-dapp",
   "version": "0.3.0",
-  "description": "Mint button for SweatyNFT collections",
+  "description": "Mint button SDK for SweatyNFT contracts",
   "main": "build/index.js",
   "types": "build/types/index.d.ts",
   "scripts": {
