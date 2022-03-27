@@ -5,7 +5,7 @@ interface TezosContractStorage {
 export const getTezoContractStorage = async (
   network: string,
   address: string
-) => {
+): Promise<TezosContractStorage> => {
   try {
     const bcdNetwork =
       network === "tezos-hangzhounet" ? "hangzhou2net" : "mainnet"
