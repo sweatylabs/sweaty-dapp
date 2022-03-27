@@ -1,0 +1,121 @@
+<html>
+
+<head>
+  <title>Demo</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+    body {
+      background-color: #eee;
+      font-family: Poppins;
+    }
+
+    .content {
+      max-width: 600px;
+      min-width: 200px;
+      margin: 0px auto;
+      background-color: white;
+      padding: 30px;
+    }
+
+    .flex-spacer {
+      flex: 1;
+    }
+
+    .row {
+      display: flex;
+      flex-direction: row;
+    }
+
+    input,
+    button {
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      margin-right: 5px;
+    }
+
+    #token-info {
+      font-size: 1.2em;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+  <div class='content'>
+    <div class='row'>
+      <div class='flex-spacer'></div>
+      <button id='sync-button'>Sync</button>
+    </div>
+    <p>
+      Nunc nisl mauris, lacinia at mi sit amet, sollicitudin aliquet turpis. Nunc quis nisl in arcu efficitur
+      sollicitudin.
+      Aliquam augue mauris, imperdiet sit amet blandit nec, mattis vel mi. Vivamus lacinia porta orci a porttitor. Morbi
+      blandit dapibus odio vestibulum placerat. Maecenas tincidunt, massa in laoreet tincidunt, purus mi scelerisque.
+    </p>
+    <hr />
+    <div class='row'>
+      <div id='token-info'></div>
+    </div>
+    <div class='row'>
+      <input type='text' id='quantity' type='number' step='1' min='1' />
+      <button id='mint-button'>Mint</button>
+    </div>
+
+  </div>
+  <script src='/demo/lib.js'></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', async function () {
+
+      const sweaty = new SweatyDapp.default({
+        contractAddress: 'KT1LYXcyjNqfdxTBBXzbB2krReEeQern9Gqx',
+        contractVersion: 'sweaty-fa2-v3',
+        network: 'tezos-hangzhounet'
+      })
+
+      const syncButtonEl = document.getElementById('sync-button')
+      const tokenInfoEl = document.getElementById('token-info')
+      const quantityEl = document.getElementById('quantity')
+      const mintButtonEl = document.getElementById('mint-button')
+
+      const refreshTokenIU = async () => {
+        const info = await sweaty.getContractInfo()
+
+        let msg = `${info.numMinted}/${info.maxSupply} Tokens Minted`
+        msg += `<br/>Public Mint Limit: ${info.publicMintLimit}`
+        msg += `<br/>Whitelist Mint Limit: ${info.whitelistMintLimit}`
+        msg += `<br/>Whitelist Enabled: ${info.isWhitelistEnabled ? 'Yes' : 'No'}`
+
+        const isConnected = await sweaty.isConnected()
+        if (isConnected) {
+          const isWhitelisted = await sweaty.isWhitelisted()
+          msg += `<br/>Is wallet whitelisted?: ${isWhitelisted ? 'Yes' : 'No'}`
+        }
+
+        tokenInfoEl.innerHTML = msg
+      }
+
+      syncButtonEl.onclick = async () => {
+        await sweaty.sync()
+        await refreshTokenIU()
+      }
+
+      mintButtonEl.onclick = async () => {
+        const isConnected = await sweaty.isConnected()
+        if (!isConnected) {
+          await sweaty.sync()
+        }
+        const amount = parseInt(quantityEl.value)
+        await sweaty.mint(amount)
+        await refreshTokenIU()
+      }
+
+      await sweaty.init()
+      await refreshTokenIU()
+
+    })
+  </script>
+</body>
+
+</html>
