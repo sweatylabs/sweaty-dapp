@@ -63,3 +63,7 @@ See `public/index.html` for a working HTML example.
 `yarn start` – start demo server on port 9000
 
 `yarn build` – build JS lib
+
+### Thank You
+
+A special thanks goes to [Tezos Israel](https://tezos.co.il) for sponsoring the initial SweatyNFT Tezos integration.
