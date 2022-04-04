@@ -6,7 +6,7 @@ SweatyDapp is a Javascript browser library to help interact with SweatyNFT smart
 
 ### Supported Contracts
 - [x] Tezos (via Taquito/Beacon)
-- [x] Ethereum/Polygon
+- [x] Ethereum/Polygon (via Ethers)
 
 ### Example
  ```js
