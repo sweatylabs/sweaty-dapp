@@ -2,7 +2,7 @@ interface TezosContractStorage {
   [k: string]: any
 }
 
-export const getTezoContractStorage = async (
+export const getTezosContractStorage = async (
   network: string,
   address: string
 ): Promise<TezosContractStorage> => {

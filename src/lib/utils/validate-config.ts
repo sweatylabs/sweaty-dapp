@@ -15,7 +15,7 @@ interface ConfigValidationCase {
   validate: (v: any) => boolean
 }
 
-const validationCases: ConfigValidationCase[] = [
+const validationCases = (config: SweatyDappConfig): ConfigValidationCase[] => [
   {
     key: "contractAddress",
     message:
@@ -38,6 +38,17 @@ const validationCases: ConfigValidationCase[] = [
     ).join(", ")}.`,
     validate: (v: any) => ALL_NETWORKS.includes(v),
   },
+  {
+    key: "rpcUrl",
+    message: `The node RPC URL for connecting to the blockchain. Must be a URL.`,
+    validate: (v: any) => {
+      if (config.network.startsWith("tezos")) {
+        // tezos doesn't require rpcUrl
+        return true
+      }
+      return typeof v === "string" && v.length > 0
+    },
+  },
 ]
 
 const msg = (str: string): string => {
@@ -48,7 +59,8 @@ export const validateConfig = (config: SweatyDappConfig) => {
   if (!config) {
     throw new Error("config is missing")
   }
-  for (const c of validationCases) {
+  const cases = validationCases(config)
+  for (const c of cases) {
     if (!c.validate(config[c.key])) {
       throw new Error(
         msg(`invalid value for property "${c.key}"\nExpected: ${c.message}`)

@@ -68,16 +68,51 @@
   <script>
     window.addEventListener('DOMContentLoaded', async function () {
 
-      const sweaty = new SweatyDapp.default({
+      const which = 'polygon'
+
+      const tezosConfig = {
         contractAddress: 'KT1LYXcyjNqfdxTBBXzbB2krReEeQern9Gqx',
         contractVersion: 'sweaty-fa2-v3',
         network: 'tezos-hangzhounet'
-      })
+      }
+
+      const polygonConfig = {
+        contractAddress: '0x7787e73d6379a6539098116658c920472e2d343c',
+        contractVersion: 'sweaty-erc721-v3',
+        network: 'polygon-mumbai',
+        // there are many public nodes for Polygon
+        rpcUrl: 'https://matic-mumbai.chainstacklabs.com'
+      }
+
+      const ethereumConfig = {
+        contractAddress: '0xa629a3fe13d2170f16e60b292201bd305ab7b5c2',
+        contractVersion: 'sweaty-erc721-v3',
+        network: 'ethereum-rinkeby',
+        // may need to use an authenticated node for Ethereum, such as Infra
+        rpcUrl: 'https://rinkeby.infura.io/v3/<YOUR_PROJECT_ID>'
+      }
+
+      const config = (
+        which === 'tezos' ? tezosConfig :
+          which === 'polygon' ? polygonConfig :
+            which === 'ethereum' ? ethereumConfig :
+              null
+      )
+      if (!config) {
+        throw new Error('bad config')
+      }
+
+      const sweaty = new SweatyDapp.default(config)
 
       const syncButtonEl = document.getElementById('sync-button')
       const tokenInfoEl = document.getElementById('token-info')
       const quantityEl = document.getElementById('quantity')
       const mintButtonEl = document.getElementById('mint-button')
+
+      // if ethereum/polygon, then hide the quantity input
+      if (which !== 'tezos') {
+        quantityEl.style.display = 'none'
+      }
 
       const refreshTokenIU = async () => {
         const info = await sweaty.getContractInfo()
@@ -106,7 +141,9 @@
         if (!isConnected) {
           await sweaty.sync()
         }
-        const amount = parseInt(quantityEl.value)
+        // Tezos supports multiple mints per transaction, but
+        // Ethereum/Polygon supports only 1 mint per transaction
+        const amount = which === 'tezos' ? parseInt(quantityEl.value) : 1
         await sweaty.mint(amount)
         await refreshTokenIU()
       }

@@ -1,6 +1,8 @@
 import "@babel/polyfill"
+import EthereumProvider from "./providers/ethereum"
 import { ContractInfo, Provider } from "./providers/provider"
 import TezosProvider from "./providers/tezos"
+import { getSweatyBlockchainConfig } from "./utils/get-blockchain-config"
 import {
   getSweatyContractCode,
   SweatyContractCode,
@@ -13,9 +15,23 @@ export interface SweatyDappConfig {
   contractAddress: string
   contractVersion: string
   network: string
+  rpcUrl?: string
 }
+export interface SweatyBlockchainConfig {
+  rpcUrls: {
+    polygon: string
+    mumbai: string
+  }
+  blockchainExplorerUrls: {
+    polygon: string
+    mumbai: string
+  }
+}
+
 export default class SweatyDapp {
   config: SweatyDappConfig
+
+  blockchainConfig: SweatyBlockchainConfig
   code: SweatyContractCode
   provider: Provider
 
@@ -29,13 +45,24 @@ export default class SweatyDapp {
       if (this.code) {
         return
       }
+
       this.code = await getSweatyContractCode(this.config.contractVersion)
+      this.blockchainConfig = await getSweatyBlockchainConfig()
+
       if (this.isTezos()) {
         this.provider = new TezosProvider(this.code, this.config)
         sweatyLog("using tezos provider")
+      } else if (this.isEthereum()) {
+        this.provider = new EthereumProvider(
+          this.code,
+          this.config,
+          this.blockchainConfig
+        )
+        sweatyLog("using ethereum provider")
       } else {
         throw new Error("invalid provider")
       }
+
       sweatyLog("initialized")
     } catch (err) {
       sweatyLog(err)

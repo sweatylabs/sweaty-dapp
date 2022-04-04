@@ -4,32 +4,31 @@ import { TezosToolkit } from "@taquito/taquito"
 import { SweatyDappConfig } from ".."
 import { SweatyContractCode } from "../utils/get-sweaty-contract-code"
 import BigNumber from "bignumber.js"
-import { getTezoContractStorage } from "../utils/get-tezos-contract-storage"
+import { getTezosContractStorage } from "../utils/get-tezos-contract-storage"
 import { ContractInfo } from "./provider"
 
-export interface Network {
+export interface TezNetwork {
   name: string
   url: string
 }
 
-export const NETWORK_MAINNET: Network = {
+export const NETWORK_TEZOS_MAINNET: TezNetwork = {
   name: "mainnet",
   url: "https://mainnet-node.madfish.solutions",
 }
-
-export const NETWORK_HANGZHOUNET: Network = {
+export const NETWORK_TEZOS_HANGZHOUNET: TezNetwork = {
   name: "hangzhounet",
   url: "https://hangzhounet.api.tez.ie",
 }
 
 const networksMap = {
-  "tezos-mainnet": NETWORK_MAINNET,
-  "tezos-hangzhounet": NETWORK_HANGZHOUNET,
+  "tezos-mainnet": NETWORK_TEZOS_MAINNET,
+  "tezos-hangzhounet": NETWORK_TEZOS_HANGZHOUNET,
 }
 
 export default class TezosProvider {
-  code: SweatyContractCode
   config: SweatyDappConfig
+  code: SweatyContractCode
 
   toolkit: TezosToolkit | null
   wallet: BeaconWallet | null
@@ -114,11 +113,11 @@ export default class TezosProvider {
 
   async getContractInfo(): Promise<ContractInfo> {
     try {
-      const storage = await getTezoContractStorage(
+      const storage = await getTezosContractStorage(
         this.config.network,
         this.config.contractAddress
       )
-      // assume that the big int values won't be too big
+      // assume that the big number values won't be too big
       // as to cause overflow
       return {
         numMinted: parseInt(storage.current_token_index),

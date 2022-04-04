@@ -1,5 +1,5 @@
 export const sweatyLog = (msg: string | Error) => {
-  const fn = msg instanceof Error ? console.error : console.log
+  const fn = msg instanceof Error ? console.trace : console.log
   if (!msg) {
     return
   }
