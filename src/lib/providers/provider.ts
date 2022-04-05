@@ -1,5 +1,6 @@
 
 export interface ContractInfo {
+  mintPrice: string
   numMinted: number
   maxSupply: number
   isWhitelistEnabled: boolean
@@ -9,7 +10,7 @@ export interface ContractInfo {
 }
 
 export interface Provider {
-  isConnected: () => Promise<boolean>
+  isConnected: () => boolean
   sync: () => Promise<string>
   reset: () => Promise<void>
   mint: (amount: number) => Promise<void>

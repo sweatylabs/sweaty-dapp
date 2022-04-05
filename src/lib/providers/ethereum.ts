@@ -1,4 +1,5 @@
 import { BigNumber, ethers } from "ethers"
+import { formatEther } from "ethers/lib/utils"
 
 import { SweatyBlockchainConfig, SweatyDappConfig } from ".."
 import { SweatyContractCode } from "../utils/get-sweaty-contract-code"
@@ -71,12 +72,15 @@ export default class EthereumProvider {
     }
   }
 
-  async isConnected(): Promise<boolean> {
+  isConnected(): boolean {
     return !!this.provider
   }
 
   async sync(): Promise<string> {
     try {
+      if (this.isConnected()) {
+        throw new Error("wallet already connected")
+      }
       await this.switchNetwork()
       const provider = new ethers.providers.Web3Provider(
         (window as any).ethereum
@@ -92,7 +96,7 @@ export default class EthereumProvider {
 
   async reset(): Promise<void> {
     try {
-      if (!this.provider) {
+      if (!this.isConnected()) {
         return
       }
       this.provider = null
@@ -103,7 +107,7 @@ export default class EthereumProvider {
 
   async mint(amount: number) {
     try {
-      if (!this.provider) {
+      if (!this.isConnected()) {
         throw new Error("wallet not connected")
       }
       if (amount > 1) {
@@ -140,6 +144,7 @@ export default class EthereumProvider {
 
       // assume that the big number values won't be too big
       // as to cause overflow
+      const mintPrice = (await c.mMintPrice()) as BigNumber
       const numMinted = (await c.tokensMinted()) as BigNumber
       const maxSupply = (await c.mMaxSupply()) as BigNumber
       const isWhitelistEnabled = (await c.mWhitelistEnabled()) as boolean
@@ -147,6 +152,7 @@ export default class EthereumProvider {
       const publicMintLimit = (await c.mPublicMintLimit()) as BigNumber
       const whitelistMintLiimt = (await c.mWhitelistMintLimit()) as BigNumber
       return {
+        mintPrice: formatEther(mintPrice),
         numMinted: numMinted.toNumber(),
         maxSupply: maxSupply.toNumber(),
         isWhitelistEnabled,
@@ -161,7 +167,18 @@ export default class EthereumProvider {
 
   async isWhitelisted(address?: string): Promise<boolean> {
     try {
-      return false
+      if (!this.isConnected()) {
+        throw new Error("wallet not connected")
+      }
+      const c = new ethers.Contract(
+        this.config.contractAddress,
+        this.code.abi,
+        this.provider.getSigner()
+      )
+      const source = this.provider.getSigner().getAddress()
+      const result = await c.isWhitelisted(address || source)
+      console.log("isWhitelisted: ", result)
+      return result
     } catch (err) {
       throw err
     }

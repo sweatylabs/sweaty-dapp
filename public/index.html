@@ -35,6 +35,10 @@
       margin-right: 5px;
     }
 
+    button {
+      cursor: pointer;
+    }
+
     #token-info {
       font-size: 1.2em;
       font-weight: 600;
@@ -68,7 +72,7 @@
   <script>
     window.addEventListener('DOMContentLoaded', async function () {
 
-      const which = 'polygon'
+      const which = 'tezos'
 
       const tezosConfig = {
         contractAddress: 'KT1LYXcyjNqfdxTBBXzbB2krReEeQern9Gqx',
@@ -118,6 +122,8 @@
         const info = await sweaty.getContractInfo()
 
         let msg = `${info.numMinted}/${info.maxSupply} Tokens Minted`
+        msg += `<br/>Mint Price: ${info.mintPrice}`
+        msg += `<br/>Sale Paused: ${info.isPaused ? 'Yes' : 'No'}`
         msg += `<br/>Public Mint Limit: ${info.publicMintLimit}`
         msg += `<br/>Whitelist Mint Limit: ${info.whitelistMintLimit}`
         msg += `<br/>Whitelist Enabled: ${info.isWhitelistEnabled ? 'Yes' : 'No'}`

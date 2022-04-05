@@ -42,6 +42,7 @@ SweatyDapp is a Javascript browser library to help interact with SweatyNFT smart
       const info = await sweaty.getContractInfo()
       /*
       interface ContractInfo {
+        mintPrice: string
         numMinted: number
         maxSupply: number
         isWhitelistEnabled: boolean

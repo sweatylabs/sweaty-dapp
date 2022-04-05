@@ -41,14 +41,13 @@ export default class TezosProvider {
     this.config = _config
   }
 
-  async isConnected(): Promise<boolean> {
+  isConnected(): boolean {
     return !!(this.toolkit && this.wallet)
   }
 
   async sync(): Promise<string> {
     try {
-      const isConnected = await this.isConnected()
-      if (isConnected) {
+      if (this.isConnected()) {
         throw new Error("wallet already connected")
       }
       const n = networksMap[this.config.network]
@@ -73,7 +72,7 @@ export default class TezosProvider {
 
   async reset(): Promise<void> {
     try {
-      if (!this.toolkit) {
+      if (!this.isConnected()) {
         return
       }
       await this.wallet.disconnect()
@@ -113,6 +112,7 @@ export default class TezosProvider {
 
   async getContractInfo(): Promise<ContractInfo> {
     try {
+      // fetch storage via 3rd party API, not wallet
       const storage = await getTezosContractStorage(
         this.config.network,
         this.config.contractAddress
@@ -120,6 +120,7 @@ export default class TezosProvider {
       // assume that the big number values won't be too big
       // as to cause overflow
       return {
+        mintPrice: `${storage.mint_price / 1000000}`,
         numMinted: parseInt(storage.current_token_index),
         maxSupply: parseInt(storage.max_supply),
         isWhitelistEnabled: storage.whitelist_enabled,
@@ -134,6 +135,9 @@ export default class TezosProvider {
 
   async isWhitelisted(address?: string): Promise<boolean> {
     try {
+      if (!this.isConnected()) {
+        throw new Error("wallet not connected")
+      }
       const c = await this.toolkit.wallet.at(this.config.contractAddress)
       const source = await this.wallet.getPKH()
       const walletAddress = address || source
