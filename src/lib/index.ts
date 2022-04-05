@@ -78,18 +78,18 @@ export default class SweatyDapp {
     return this.config.contractAddress.startsWith("KT")
   }
 
-  async isConnected(): Promise<boolean> {
+  isConnected(): boolean {
     try {
-      return await this.provider.isConnected()
+      return this.provider.isConnected()
     } catch (err) {
       sweatyLog(err)
       throw err
     }
   }
 
-  async sync(): Promise<void> {
+  async sync(): Promise<string> {
     try {
-      await this.provider.sync()
+      return this.provider.sync()
     } catch (err) {
       sweatyLog(err)
       throw err
@@ -116,7 +116,7 @@ export default class SweatyDapp {
 
   async isWhitelisted(address?: string): Promise<boolean> {
     try {
-      return await this.provider.isWhitelisted(address)
+      return this.provider.isWhitelisted(address)
     } catch (err) {
       sweatyLog(err)
       throw err

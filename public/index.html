@@ -72,7 +72,7 @@
   <script>
     window.addEventListener('DOMContentLoaded', async function () {
 
-      const which = 'tezos'
+      const which = 'polygon'
 
       const tezosConfig = {
         contractAddress: 'KT1LYXcyjNqfdxTBBXzbB2krReEeQern9Gqx',
@@ -138,14 +138,16 @@
       }
 
       syncButtonEl.onclick = async () => {
-        await sweaty.sync()
+        const account = await sweaty.sync()
+        console.log('connected wallet: ', account)
         await refreshTokenIU()
       }
 
       mintButtonEl.onclick = async () => {
         const isConnected = await sweaty.isConnected()
         if (!isConnected) {
-          await sweaty.sync()
+          const account = await sweaty.sync()
+          console.log('connected wallet: ', account)
         }
         // Tezos supports multiple mints per transaction, but
         // Ethereum/Polygon supports only 1 mint per transaction
