@@ -177,7 +177,6 @@ export default class EthereumProvider {
       )
       const source = this.provider.getSigner().getAddress()
       const result = await c.isWhitelisted(address || source)
-      console.log("isWhitelisted: ", result)
       return result
     } catch (err) {
       throw err

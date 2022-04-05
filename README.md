@@ -28,8 +28,7 @@ SweatyDapp is a Javascript browser library to help interact with SweatyNFT smart
 
       mintButton.onclick = async () => {
         // check if connected
-        const isConnected = await sweaty.isConnected()
-        if (!isConnected) {
+        if (!sweaty.isConnected()) {
           // if not, prompt to connect wallet
           await sweaty.sync()
         }

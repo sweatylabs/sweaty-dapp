@@ -128,8 +128,7 @@
         msg += `<br/>Whitelist Mint Limit: ${info.whitelistMintLimit}`
         msg += `<br/>Whitelist Enabled: ${info.isWhitelistEnabled ? 'Yes' : 'No'}`
 
-        const isConnected = await sweaty.isConnected()
-        if (isConnected) {
+        if (sweaty.isConnected()) {
           const isWhitelisted = await sweaty.isWhitelisted()
           msg += `<br/>Is wallet whitelisted?: ${isWhitelisted ? 'Yes' : 'No'}`
         }
@@ -144,8 +143,7 @@
       }
 
       mintButtonEl.onclick = async () => {
-        const isConnected = await sweaty.isConnected()
-        if (!isConnected) {
+        if (!sweaty.isConnected()) {
           const account = await sweaty.sync()
           console.log('connected wallet: ', account)
         }
