@@ -3,10 +3,7 @@ import EthereumProvider from "./providers/ethereum"
 import { ContractInfo, Provider } from "./providers/provider"
 import TezosProvider from "./providers/tezos"
 import { getSweatyBlockchainConfig } from "./utils/get-blockchain-config"
-import {
-  getSweatyContractCode,
-  SweatyContractCode,
-} from "./utils/get-sweaty-contract-code"
+import { getSweatyContractCode } from "./utils/get-sweaty-contract-code"
 import { sweatyLog } from "./utils/sweaty-log"
 import { validateConfig } from "./utils/validate-config"
 
@@ -30,9 +27,6 @@ export interface SweatyBlockchainConfig {
 
 export default class SweatyDapp {
   config: SweatyDappConfig
-
-  blockchainConfig: SweatyBlockchainConfig
-  code: SweatyContractCode
   provider: Provider
 
   constructor(_config: SweatyDappConfig) {
@@ -42,21 +36,21 @@ export default class SweatyDapp {
 
   async init(): Promise<void> {
     try {
-      if (this.code) {
+      if (this.provider) {
+        sweatyLog("already initialized")
         return
       }
 
-      this.code = await getSweatyContractCode(this.config.contractVersion)
-      this.blockchainConfig = await getSweatyBlockchainConfig()
-
       if (this.isTezos()) {
-        this.provider = new TezosProvider(this.code, this.config)
+        this.provider = new TezosProvider(this.config)
         sweatyLog("using tezos provider")
       } else if (this.isEthereum()) {
+        const code = await getSweatyContractCode(this.config.contractVersion)
+        const blockchainConfig = await getSweatyBlockchainConfig()
         this.provider = new EthereumProvider(
-          this.code,
+          code,
           this.config,
-          this.blockchainConfig
+          blockchainConfig
         )
         sweatyLog("using ethereum provider")
       } else {

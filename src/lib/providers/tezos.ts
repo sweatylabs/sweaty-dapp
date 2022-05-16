@@ -2,7 +2,6 @@ import { NetworkType } from "@airgap/beacon-sdk"
 import { BeaconWallet } from "@taquito/beacon-wallet"
 import { TezosToolkit } from "@taquito/taquito"
 import { SweatyDappConfig } from ".."
-import { SweatyContractCode } from "../utils/get-sweaty-contract-code"
 import BigNumber from "bignumber.js"
 import { getTezosContractStorage } from "../utils/get-tezos-contract-storage"
 import { ContractInfo } from "./provider"
@@ -28,16 +27,14 @@ const networksMap = {
 
 export default class TezosProvider {
   config: SweatyDappConfig
-  code: SweatyContractCode
 
   toolkit: TezosToolkit | null
   wallet: BeaconWallet | null
 
-  constructor(_code: SweatyContractCode, _config: SweatyDappConfig) {
+  constructor(_config: SweatyDappConfig) {
     if (!networksMap[_config.network]) {
       throw new Error(`invalid network: ${_config.network}`)
     }
-    this.code = _code
     this.config = _config
   }
 
