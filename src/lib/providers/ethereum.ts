@@ -30,7 +30,7 @@ export const NETWORK_POLYGON_MUMBAI: EthNetwork = {
 }
 
 const networksMap = {
-  "etheruem-mainnet": NETWORK_ETHEREUM_MAINNET,
+  "ethereum-mainnet": NETWORK_ETHEREUM_MAINNET,
   "ethereum-rinkeby": NETWORK_ETHEREUM_RINKEBY,
   "polygon-mainnet": NETWORK_POLYGON_MAINNET,
   "polygon-mumbai": NETWORK_POLYGON_MUMBAI,

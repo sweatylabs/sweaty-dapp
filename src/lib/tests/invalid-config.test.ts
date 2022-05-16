@@ -40,6 +40,7 @@ describe('SweatyDapp', () => {
     expect(resultErr).toBeTruthy()
   })
 
+
   it('should throw error when rcpUrl is missing (polygon-mumbai)', async () => {
     let resultErr = null
     try {
