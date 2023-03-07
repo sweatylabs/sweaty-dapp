@@ -86,6 +86,6 @@
     "@taquito/beacon-wallet": "^12.0.0",
     "@taquito/taquito": "^12.0.0",
     "bignumber.js": "^9.0.2",
-    "ethers": "^5.6.2"
+    "ethers": "^6.1.0"
   }
 }
